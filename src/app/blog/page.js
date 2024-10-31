@@ -1,4 +1,4 @@
-// 'use client'
+// src/app/blog/page.js
 
 import getDomain from '@/app/lib/getDomain';
 
@@ -10,6 +10,11 @@ import getDomain from '@/app/lib/getDomain';
 // no-store
 
 async function getData() {
+  if (typeof window === 'undefined') {
+    // If in server-side (prerender), return fallback data
+    return { items: [] };
+  }
+
   // 1. API endpoints
   const domain = getDomain();
   const endpoint = `${domain}/api/posts`;

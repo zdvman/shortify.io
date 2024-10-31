@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server"
+// src/app/api/posts/route.js
+
+import { NextResponse } from 'next/server';
 
 export async function GET() {
-	return NextResponse.json({items: [{id: 1, title: "Hello World"}]});
+  return NextResponse.json({ items: [{ id: 1, title: 'Hello World' }] });
 }
 /* 
 export async function POST() {
