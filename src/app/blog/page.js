@@ -29,7 +29,7 @@ export default async function BlogPage() {
   const data = await getData();
   const items = data && data.items ? [...data.items] : [];
   console.log(items);
-  console.log(process.env.PUBLIC_DOMAIN);
+  console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
   return (
     <main>
       <h1>Hello World</h1>
