@@ -2,6 +2,13 @@
 
 import getDomain from '@/app/lib/getDomain';
 
+// fetch caching options
+
+// force-cache
+
+// revalidate: n seconds
+// no-store
+
 async function getData() {
   // 1. API endpoints
   const domain = getDomain();
