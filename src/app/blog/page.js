@@ -1,7 +1,5 @@
 // src/app/blog/page.js
 
-import getDomain from '@/app/lib/getDomain';
-
 // fetch caching options
 
 // force-cache
@@ -11,51 +9,38 @@ import getDomain from '@/app/lib/getDomain';
 
 // src/app/blog/page.js
 
+import getDomain from '@/app/lib/getDomain';
+
 async function getData() {
+  // 1 endpoint - API?
   const domain = getDomain();
-  const endpoint = `${domain}/api/posts`;
-  console.log(`Fetching data from ${endpoint}`);
+  const endpoint = `${domain}/api/posts`; // -> third party api request??
+  const res = await fetch(endpoint, { next: { revalidate: 10 } }); // HTTP GET
+  // const res = await fetch(endpoint, { cache: 'no-store' }); // HTTP GET
 
-  try {
-    const res = await fetch(endpoint, { next: { revalidate: 10 } });
-
-    if (!res.ok) {
-      console.error(`Failed to fetch data: ${res.status} ${res.statusText}`);
-      throw new Error('Failed to fetch data!');
-    }
-
-    if (res.headers.get('content-type') !== 'application/json') {
-      console.warn('Response is not JSON');
-      return { items: [] };
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
   }
+
+  if (res.headers.get('content-type') !== 'application/json') {
+    return { items: [] };
+  }
+  return res.json();
 }
 
 export default async function BlogPage() {
-  let items = [];
-
-  try {
-    const data = await getData();
-    items = data.items || [];
-  } catch (error) {
-    console.error('Error in BlogPage:', error);
-  }
-
+  const data = await getData();
+  // const dbHello = await helloWorld();
+  const items = data && data.items ? [...data.items] : [];
   return (
     <main>
       <h1>Hello World</h1>
+      {/* <p>DB Response: {JSON.stringify(dbHello)}</p> */}
       <p>Posts:</p>
-      {items.length > 0 ? (
-        items.map((item, idx) => <li key={`post-${idx}`}>{item.title}</li>)
-      ) : (
-        <p>No posts available.</p>
-      )}
+      {items &&
+        items.map((item, idx) => {
+          return <BlogCard title={item.title} key={`post-${idx}`} />;
+        })}
     </main>
   );
 }
