@@ -9,8 +9,9 @@ import getDomain from '@/app/lib/getDomain';
 // revalidate: n seconds
 // no-store
 
+// src/app/blog/page.js
+
 async function getData() {
-  // 1. API endpoints
   const domain = getDomain();
   const endpoint = `${domain}/api/posts`;
   console.log(`Fetching data from ${endpoint}`);
@@ -37,23 +38,24 @@ async function getData() {
 }
 
 export default async function BlogPage() {
+  let items = [];
+
   try {
     const data = await getData();
-    const items = data && data.items ? [...data.items] : [];
-    // console.log(items);
-    // console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
-    return (
-      <main>
-        <h1>Hello World</h1>
-        <p>Posts:</p>
-        {items &&
-          items.map((item, idx) => {
-            return <li key={`post-${idx}`}>{item.title}</li>;
-          })}
-      </main>
-    );
+    items = data.items || [];
   } catch (error) {
     console.error('Error in BlogPage:', error);
-    // Handle the error appropriately
   }
+
+  return (
+    <main>
+      <h1>Hello World</h1>
+      <p>Posts:</p>
+      {items.length > 0 ? (
+        items.map((item, idx) => <li key={`post-${idx}`}>{item.title}</li>)
+      ) : (
+        <p>No posts available.</p>
+      )}
+    </main>
+  );
 }
