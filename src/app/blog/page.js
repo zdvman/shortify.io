@@ -1,20 +1,12 @@
 // src/app/blog/page.js
 
 import getDomain from '@/app/lib/getDomain';
-
-// fetch caching options
-
-// force-cache
-
-// revalidate: n seconds
-// no-store
-
-// src/app/blog/page.js
+import BlogCard from './card';
 
 async function getData() {
   // 1 endpoint - API?
   const domain = getDomain();
-  const endpoint = `/api/posts`; // -> third party api request??
+  const endpoint = `${domain}/api/posts`; // -> third party api request??
   // const res = await fetch(endpoint, { next: { revalidate: 10 } }); // HTTP GET
   const res = await fetch(endpoint, { cache: 'no-store' }); // HTTP GET
 
@@ -34,9 +26,10 @@ export default async function BlogPage() {
   return (
     <main>
       <h1>Hello World</h1>
+      <p>Posts:</p>
       {items &&
         items.map((item, idx) => {
-          return <li key={`post-${idx}`}>{item.title}</li>;
+          return <BlogCard title={item.title} key={`post-${idx}`} />;
         })}
     </main>
   );
