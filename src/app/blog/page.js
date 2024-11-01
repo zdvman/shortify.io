@@ -1,5 +1,7 @@
 // src/app/blog/page.js
 
+import getDomain from '@/app/lib/getDomain';
+
 // fetch caching options
 
 // force-cache
@@ -8,8 +10,6 @@
 // no-store
 
 // src/app/blog/page.js
-
-import getDomain from '@/app/lib/getDomain';
 
 async function getData() {
   // 1 endpoint - API?
@@ -30,13 +30,10 @@ async function getData() {
 
 export default async function BlogPage() {
   const data = await getData();
-  // const dbHello = await helloWorld();
   const items = data && data.items ? [...data.items] : [];
   return (
     <main>
       <h1>Hello World</h1>
-      {/* <p>DB Response: {JSON.stringify(dbHello)}</p> */}
-      <p>Posts:</p>
       {items &&
         items.map((item, idx) => {
           return <li key={`post-${idx}`}>{item.title}</li>;
