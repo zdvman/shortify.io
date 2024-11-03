@@ -3,11 +3,14 @@
 import getDomain from '@/app/lib/getDomain';
 import BlogCard from './card';
 
+import { helloWorld } from '@/app/lib/db';
+
 async function getData() {
   try {
     // 1 endpoint - API?
     const domain = getDomain();
     const endpoint = `${domain}/api/posts`; // -> third party api request??
+    // const endpoint = `/api/posts`;
     const res = await fetch(endpoint, {
       // next: { revalidate: 10 }, // Optional: Add revalidation
       cache: 'no-store', // Optional: Disable cache
@@ -17,12 +20,12 @@ async function getData() {
     });
 
     if (!res.ok) {
-      throw new Error('Fetch response not OK:', res.status, res.statusText);
+      throw new Error(`Fetch response not OK: ${res.status} ${res.statusText}`);
     }
 
-    // if (res.headers.get('content-type') !== 'application/json') {
-    //   return { items: [] };
-    // }
+    if (res.headers.get('content-type') !== 'application/json') {
+      return { items: [] };
+    }
 
     const data = await res.json();
     return data;
@@ -34,8 +37,11 @@ async function getData() {
 
 export default async function BlogPage() {
   let data;
+  let dbresponse;
   try {
     data = await getData();
+    dbresponse = await helloWorld();
+    console.log('dbresponse :', dbresponse);
   } catch (error) {
     console.error('Error fetching blog posts:', error);
   }
@@ -43,6 +49,7 @@ export default async function BlogPage() {
   return (
     <main>
       <h1>Hello World</h1>
+      <p>DB Response: {JSON.stringify(dbresponse)}</p>
       <p>Posts:</p>
       {items &&
         items.map((item, idx) => {
@@ -51,3 +58,8 @@ export default async function BlogPage() {
     </main>
   );
 }
+
+export const config = {
+  runtime: 'edge',
+  regions: ['iad1'], // Replace 'iad1' with your desired region code
+};
