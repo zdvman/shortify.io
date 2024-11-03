@@ -1,10 +1,18 @@
+// This file contains the form for creating a new link
+
 'use client';
 
 import { useState } from 'react';
 
 export default function LinksCreateForm() {
+  // create a state variable to store the form results
+  // set the initial state to null
   const [results, setResult] = useState(null);
+
   const handleForm = async (event) => {
+    // prevent the default form submission behavior
+    // which would cause the page to refresh
+    // and the form data to be lost
     event.preventDefault();
 
     // create a new FormData object from the form
@@ -33,9 +41,9 @@ export default function LinksCreateForm() {
       throw new Error('Failed to create link');
     }
     const result = await response.json();
+    // set the results state variable
+    // to the result of the fetch request
     setResult(result);
-    // console.log(result);
-    return result;
   };
   return (
     <>
@@ -48,6 +56,7 @@ export default function LinksCreateForm() {
         />
         <button type='submit'>Shorten</button>
       </form>
+      <div>Results: </div>
       {results && JSON.stringify(results)}
     </>
   );
