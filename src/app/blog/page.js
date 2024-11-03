@@ -59,5 +59,5 @@ export default async function BlogPage() {
   );
 }
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 export const preferredRegion = 'iad1';
