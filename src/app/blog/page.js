@@ -59,7 +59,5 @@ export default async function BlogPage() {
   );
 }
 
-export const config = {
-  runtime: 'edge',
-  regions: ['iad1'], // Replace 'iad1' with your desired region code
-};
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
