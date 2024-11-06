@@ -61,3 +61,5 @@ export default async function BlogPage() {
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
+//available regions: 'auto' | 'global' | 'home' | ['iad1', 'sfo1']
+// more information on Route Segment Config: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config

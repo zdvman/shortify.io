@@ -1,0 +1,5 @@
+{
+  "schema": "./src/app/lib/schema.js",
+  "out": "./src/migrations",
+  "dialect": "postgresql"
+}
