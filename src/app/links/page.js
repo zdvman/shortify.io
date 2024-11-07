@@ -1,6 +1,7 @@
 // This is the page file for the links page
 
 import LinksCreateHtmlForm from "./createHtmlForm";
+import LinksHTMLTable from "./table";
 
 export default function LinksPage() {
   return (
@@ -8,6 +9,7 @@ export default function LinksPage() {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         {/* <h1>Shortify.io is coming soon 🚧</h1> */}
         <LinksCreateHtmlForm />
+        <LinksHTMLTable />
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer>
     </div>

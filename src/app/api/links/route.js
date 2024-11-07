@@ -2,7 +2,14 @@
 
 import { NextResponse } from "next/server";
 import isValidURL from "@/app/lib/isValidURL";
-import { addLink, db } from "@/app/lib/db";
+import { addLink, getMinLinks, db } from "@/app/lib/db";
+
+// GET /api/links
+
+export async function GET() {
+  const links = await getMinLinks();
+  return NextResponse.json(links, { status: 200 });
+}
 
 // POST /api/links
 export async function POST(request) {
