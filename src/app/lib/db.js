@@ -3,6 +3,7 @@ import { linksTable } from "./schema";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon, neonConfig } from "@neondatabase/serverless";
 import { timestamp } from "drizzle-orm/mysql-core";
+import { desc } from "drizzle-orm";
 neonConfig.fetchConnectionCache = true;
 
 // Initialize the Neon client
@@ -70,6 +71,7 @@ export async function getMinLinks(limit, offset) {
     })
     .from(linksTable) // Specifies the linksTable as the target table
     .limit(lookUpLimit) // Limits the result to 10 rows
-    .offset(lookUpOffset); // Skips the first 0 rows (no rows skipped)
-  // Use .offset() when you need pagination (e.g., skipping the first 10 rows to fetch the next 10 rows)
+    .offset(lookUpOffset) // Skips the first 0 rows (no rows skipped)
+    // Use .offset() when you need pagination (e.g., skipping the first 10 rows to fetch the next 10 rows)
+    .orderBy(desc(linksTable.createdAt)); // Orders the result by createdAt in descending order
 }

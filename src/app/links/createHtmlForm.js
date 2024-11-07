@@ -1,9 +1,9 @@
-// This component is used to create a form to create a new link
+//app/links/createHtmlForm.js
 "use client";
 
 import { useState } from "react";
 
-export default function LinksCreateHtmlForm() {
+export default function LinksCreateHtmlForm({ didSubmit }) {
   const [url, setUrl] = useState("https://damaxtravel.com");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -33,7 +33,7 @@ export default function LinksCreateHtmlForm() {
       headers: {
         "Content-type": "application/json", // Set the content type
       },
-      body: JSONdata, // Set the request body
+      body: JSONdata, // Attach the request body
     };
 
     try {
@@ -56,6 +56,11 @@ export default function LinksCreateHtmlForm() {
 
       // Successful response - set the response state
       setResponse(data);
+
+      if (didSubmit) {
+        // If a callback function is provided, call it
+        didSubmit();
+      }
     } catch (err) {
       // Catch any unexpected errors
       console.error("An unexpected error occurred:", err);
@@ -86,7 +91,11 @@ export default function LinksCreateHtmlForm() {
       {/* Display the error message if an error occurred */}
       {error && <div style={{ color: "red" }}>Error: {error}</div>}
       {/* Display the response */}
-      {response && <div>Result: {JSON.stringify(response)}</div>}
+      {response && (
+        <div style={{ color: "green" }}>
+          Successfully created link: {JSON.stringify(response)}
+        </div>
+      )}
     </>
   );
 }

@@ -7,7 +7,7 @@ import { addLink, getMinLinks, db } from "@/app/lib/db";
 // GET /api/links
 
 export async function GET() {
-  const links = await getMinLinks();
+  const links = await getMinLinks(100, 0);
   return NextResponse.json(links, { status: 200 });
 }
 
