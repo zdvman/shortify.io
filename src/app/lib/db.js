@@ -41,12 +41,30 @@ export const db = drizzle(sql);
 export async function addLink(url) {
   const short = randomShortString();
   const newLink = { url: url, short: short };
+  let response, responseStatus;
   // INSERT query to add a new row to the links table
   // Inserts the provided values and returns the inserted row
-  return await db
-    .insert(linksTable) // Prepares an INSERT query for the linksTable
-    .values(newLink) // Specifies the values to insert (object must match the schema)
-    .returning(); // Returns the inserted row(s) (e.g., ID, createdAt)
+
+  try {
+    response = await db
+      .insert(linksTable) // Prepares an INSERT query for the linksTable
+      .values(newLink) // Specifies the values to insert (object must match the schema)
+      .returning(); // Returns the inserted row(s) (e.g., ID, createdAt)
+    responseStatus = 201;
+  } catch (error) {
+    // Check if the error code is a unique violation
+    if (error.code === "23505") {
+      responseStatus = 201; // Conflict status code
+      // return the existing row from database
+      response = await getExistingLinkRecord(url);
+    } else {
+      responseStatus = 500; // Internal Server Error status code
+      response = { error: "Internal Server Error" };
+    }
+  } finally {
+    console.log("finally", response);
+    return { data: response, status: responseStatus };
+  }
 }
 
 export async function getLinks(limit, offset) {
@@ -60,6 +78,14 @@ export async function getLinks(limit, offset) {
     .limit(lookUpLimit) // Limits the result to 10 rows
     .offset(lookUpOffset); // Skips the first 0 rows (no rows skipped)
   // Use .offset() when you need pagination (e.g., skipping the first 10 rows to fetch the next 10 rows)
+}
+
+// return the record from database if the URL already exists
+export async function getExistingLinkRecord(existingURL) {
+  return await db
+    .select()
+    .from(linksTable)
+    .where(eq(linksTable.url, existingURL));
 }
 
 export async function getShortLinkRecord(shortSlugValue) {

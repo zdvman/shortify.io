@@ -59,11 +59,15 @@ export async function POST(request) {
       );
     }
 
-    const dbResponse = await addLink(url);
+    const dbResponse = await addLink(url.toLowerCase()); // Add the URL to the database (convert to lowercase)
+
+    const responseData = dbResponse && dbResponse.data ? dbResponse.data : {}; // Get the data from the database response
+    const responseStatus =
+      dbResponse && dbResponse.status ? dbResponse.status : 500; // Get the status from the database response
 
     // Proceed with processing the valid URL (e.g., shortening it)
     // For now, return the URL as a placeholder
-    return NextResponse.json(dbResponse, { status: 201 });
+    return NextResponse.json(responseData, { status: responseStatus });
   } catch (error) {
     // Catch any unexpected errors
     console.error("Server error:", error);
