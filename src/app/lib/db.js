@@ -3,8 +3,10 @@ import { linksTable } from "./schema";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon, neonConfig } from "@neondatabase/serverless";
 import { timestamp } from "drizzle-orm/mysql-core";
-import { desc } from "drizzle-orm";
-neonConfig.fetchConnectionCache = true;
+import { desc, eq } from "drizzle-orm";
+import randomShortString from "./randomShortString";
+
+// neonConfig.fetchConnectionCache = true;
 
 // Initialize the Neon client
 const sql = neon(process.env.DATABASE_URL);
@@ -37,7 +39,8 @@ export const db = drizzle(sql);
 // });
 
 export async function addLink(url) {
-  const newLink = { url: url };
+  const short = randomShortString();
+  const newLink = { url: url, short: short };
   // INSERT query to add a new row to the links table
   // Inserts the provided values and returns the inserted row
   return await db
@@ -59,6 +62,13 @@ export async function getLinks(limit, offset) {
   // Use .offset() when you need pagination (e.g., skipping the first 10 rows to fetch the next 10 rows)
 }
 
+export async function getShortLinkRecord(shortSlugValue) {
+  return await db
+    .select() // Initiates a SELECT query (defaults to all columns)
+    .from(linksTable) // Specifies the linksTable as the target table
+    .where(eq(linksTable.short, shortSlugValue));
+}
+
 export async function getMinLinks(limit, offset) {
   const lookUpLimit = limit || 10;
   const lookUpOffset = offset || 0;
@@ -68,6 +78,7 @@ export async function getMinLinks(limit, offset) {
       id: linksTable.id,
       url: linksTable.url,
       timestamp: linksTable.createdAt,
+      short: linksTable.short,
     })
     .from(linksTable) // Specifies the linksTable as the target table
     .limit(lookUpLimit) // Limits the result to 10 rows

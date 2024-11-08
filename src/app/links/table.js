@@ -43,6 +43,8 @@ export default function LinksHTMLTable() {
                 <tr key={`link-item-${link.id}-${idx}`}>
                   <td>{link.id}</td>
                   <td>{link.url}</td>
+                  <td>{link.timestamp}</td>
+                  <td>{link.short}</td>
                 </tr>
               );
             })}
