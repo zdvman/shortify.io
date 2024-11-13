@@ -1,5 +1,20 @@
-import { getShortLinkRecord } from "@/app/lib/db.js";
+import { getShortLinkRecord } from "@/app/lib/db";
 import { notFound, redirect } from "next/navigation";
+import getDomain from "../lib/getDomain";
+import { Trirong } from "next/font/google";
+
+async function triggerVisit(linkId) {
+  const domain = getDomain();
+  const endpoint = `${domain}/api/visits`;
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ linkId }),
+  };
+  return await fetch(endpoint, options);
+}
 
 export default async function ShortPage({ params }) {
   const { short } = await params;
@@ -11,10 +26,19 @@ export default async function ShortPage({ params }) {
     notFound(); // Return a 404 Not Found response
   }
   console.log(record);
-  const { url } = record;
+  const { url, id } = record;
   if (!url) {
     notFound(); // Return a 404 Not Found response
   }
-  redirect(url, "push"); // Redirect to the URL
-  return <>{JSON.stringify(record)}</>;
+  if (id) {
+    await triggerVisit(id);
+  }
+
+  // redirect(url, "push"); // Redirect to the URL
+  return (
+    <div>
+      <h1>{url}</h1>
+    </div>
+  );
+  // <>{JSON.stringify(record)}</>;
 }

@@ -1,5 +1,5 @@
 // src/app/lib/db.js
-import { linksTable } from "./schema";
+import { linksTable, visitsTable } from "./schema";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon, neonConfig } from "@neondatabase/serverless";
 import { timestamp } from "drizzle-orm/mysql-core";
@@ -93,6 +93,13 @@ export async function getShortLinkRecord(shortSlugValue) {
     .select() // Initiates a SELECT query (defaults to all columns)
     .from(linksTable) // Specifies the linksTable as the target table
     .where(eq(linksTable.short, shortSlugValue));
+}
+
+export async function saveLinkVisit(linkIdValue) {
+  return await db
+    .insert(visitsTable) // Prepares an INSERT query for the visitsTable
+    .values({ linkId: linkIdValue }); // Specifies the values to insert (object must match the schema)
+  // .returning(); // Returns the inserted row(s) (e.g., ID, createdAt)
 }
 
 export async function getMinLinks(limit, offset) {
