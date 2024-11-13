@@ -8,8 +8,8 @@ import {
   serial,
   varchar,
   integer,
-  relations,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const linksTable = pgTable(
   "links",
